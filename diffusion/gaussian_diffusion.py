@@ -382,6 +382,7 @@ class GaussianDiffusion:
         denoised_fn=None,
         cond_fn=None,
         model_kwargs=None,
+        noise=None,
     ):
         """
         Sample x_{t-1} from the model at the given timestep.
@@ -395,6 +396,9 @@ class GaussianDiffusion:
                         similarly to the model.
         :param model_kwargs: if not None, a dict of extra keyword arguments to
             pass to the model. This can be used for conditioning.
+        :param noise: if specified, the stochastic sampling noise to use
+            instead of drawing a fresh `th.randn_like(x)`. Must match x's
+            shape. Lets callers replay an exact reverse-diffusion trajectory.
         :return: a dict containing the following keys:
                  - 'sample': a random sample from the model.
                  - 'pred_xstart': a prediction of x_0.
@@ -407,7 +411,10 @@ class GaussianDiffusion:
             denoised_fn=denoised_fn,
             model_kwargs=model_kwargs,
         )
-        noise = th.randn_like(x)
+        if noise is None:
+            noise = th.randn_like(x)
+        else:
+            assert noise.shape == x.shape
         nonzero_mask = (
             (t != 0).float().view(-1, *([1] * (len(x.shape) - 1)))
         )  # no noise when t == 0

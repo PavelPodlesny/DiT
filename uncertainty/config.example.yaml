@@ -1,0 +1,45 @@
+# Example config for run_uncertainty.py. Copy and edit before use.
+
+# Model / sampling (mirrors sample.py's CLI args)
+model: DiT-XL/2
+image_size: 256
+vae: mse
+ckpt: null           # null = auto-download the released DiT-XL/2 checkpoint
+num_classes: 1000
+cfg_scale: 4.0
+num_sampling_steps: 250
+device: null          # null = cuda if available, else cpu
+
+# Trajectory / branching
+classes: [207, 360]   # ImageNet class ids to analyze
+M: 3                  # base trajectories per class
+base_seed: 0          # base b uses seed base_seed + b
+branch_points: [50, 125, 200]   # respaced step indices (0..num_sampling_steps-1)
+
+# Perturbations applied at each branch point
+K: 6                  # ensemble size per (class, base, branch, type)
+perturbation_seed: 1000
+perturbations:
+  - type: gaussian_noise
+    params: {std: 0.1}
+  - type: gaussian_blur
+    params: {kernel_size: 5, sigma: 1.0}
+  - type: nxn_mask
+    params: {size: 8, fill_value: 0.0}
+  - type: scattered_mask
+    params: {fraction: 0.05, fill_value: 0.0}
+
+# Output
+output_dir: uncertainty_results
+
+# --dry-run tolerances (fp32 only; run_uncertainty.py assumes fp32 throughout)
+dry_run_tolerances:
+  latent_mse: 1.0e-6
+  image_mse: 1.0e-4
+
+# Metric backends
+metrics:
+  lpips_net: alex
+  clip_model: ViT-B-32
+  clip_pretrained: openai
+  dino_model: dino_vits16
