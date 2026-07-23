@@ -4,6 +4,7 @@ See uncertainty/README.md for config format and usage.
 """
 import argparse
 import logging
+import sys
 
 import torch
 
@@ -14,7 +15,12 @@ from uncertainty.pipeline import run_pipeline
 
 
 def main(args):
-    logging.basicConfig(level=logging.INFO, format="[%(asctime)s] %(message)s", datefmt="%H:%M:%S")
+    logging.basicConfig(
+        level=logging.INFO,
+        format="[%(asctime)s] %(message)s",
+        datefmt="%H:%M:%S",
+        stream=sys.stdout,
+    )
     config = Config.load(args.config)
 
     device = config.device or ("cuda" if torch.cuda.is_available() else "cpu")

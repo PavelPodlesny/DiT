@@ -68,7 +68,20 @@ torchrun --nnodes=1 --nproc_per_node=N sample_ddp.py --model DiT-XL/2 --num-fid-
 - `sample_ddp.py` — parallel bulk sampling across ranks for quantitative evaluation (FID/IS), not for eyeballing
   outputs.
 - `download.py` — `find_model()` resolves a checkpoint path/name to a state dict, auto-downloading the two
-  released DiT-XL/2 checkpoints (256×256, 512×512) if no `--ckpt` is given.
+  released DiT-XL/2 checkpoints (256×256, 512×512) if no `--ckpt` is given. Auto-download only recognizes
+  `DiT-XL-2-{256x256,512x512}.pt` — pointing a smaller `--model` preset at `ckpt: null` will try to load XL/2
+  weights into that architecture and fail with a shape mismatch.
+- `uncertainty/` — latent-perturbation uncertainty estimation tool (see `uncertainty/README.md` for full
+  details; `run_uncertainty.py` at the repo root is its CLI entry point, invoked like
+  `python run_uncertainty.py --config my_config.yaml [--dry-run]`). Samples `M` fixed-seed base trajectories
+  per class, branches at configured respaced sampling-step indices by perturbing the latent, resumes
+  denoising `K` times per branch reusing the base's own recorded per-step noise (isolating the perturbation's
+  effect from sampling stochasticity), then measures ensemble spread via latent MSE / LPIPS / CLIP / DINO
+  distance (both pairwise-among-ensemble and vs-base). `--dry-run` verifies the noise-replay hook is exact
+  before trusting real results. The only source change this module required, and the only one permitted to
+  it, is `diffusion/gaussian_diffusion.py`'s `p_sample` gaining an optional `noise=None` kwarg (replay an
+  exact trajectory instead of drawing fresh `torch.randn_like(x)`) — don't add further changes to `models.py`
+  or `diffusion/` for this module's sake.
 
 ## Conventions to preserve
 
