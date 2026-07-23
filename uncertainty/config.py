@@ -49,6 +49,8 @@ class Config:
 
     # Output
     output_dir: str = "uncertainty_results"
+    archive: bool = True
+    archive_dir: Optional[str] = None
 
     # Dry-run
     dry_run_tolerances: DryRunTolerances = field(default_factory=DryRunTolerances)

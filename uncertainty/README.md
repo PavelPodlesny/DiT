@@ -111,6 +111,10 @@ first step at which the discrepancy exceeded tolerance, to help localize the bug
   `pairwise` or `vs_base`.
 - `plots/class{c}_{type}_{metric}_{scope}.png` — one plot per (class, type, metric, scope),
   overlaying all `M` bases as separate lines (x = branch point, y = mean, error bars = std).
+- On successful completion, `output_dir` is compressed into a timestamped
+  `{output_dir_name}_{YYYYmmdd_HHMMSS}.tar.gz` (default location: alongside `output_dir`, i.e. its
+  parent directory). Controlled by `archive` (bool, default `true`) and `archive_dir` (defaults to
+  `output_dir`'s parent).
 
 ## Config reference
 

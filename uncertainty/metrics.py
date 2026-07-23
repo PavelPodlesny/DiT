@@ -38,8 +38,12 @@ class MetricSuite:
     def _get_clip(self):
         if self._clip is None:
             import open_clip
+            # OpenAI's original CLIP checkpoints use QuickGELU; open_clip's
+            # default configs use standard GELU, so loading "openai" weights
+            # without this flag silently mismatches the activation function.
             model, _, preprocess = open_clip.create_model_and_transforms(
-                self.clip_model_name, pretrained=self.clip_pretrained
+                self.clip_model_name, pretrained=self.clip_pretrained,
+                force_quick_gelu=(self.clip_pretrained == "openai"),
             )
             self._clip = model.to(self.device).eval()
             self._clip_preprocess = preprocess

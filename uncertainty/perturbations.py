@@ -56,8 +56,8 @@ def nxn_mask(latent: torch.Tensor, seed: int, params: dict) -> torch.Tensor:
 
     _, _, H, W = latent.shape
     n = min(n, H, W)
-    top = int(torch.randint(0, H - n + 1, (1,), generator=gen).item())
-    left = int(torch.randint(0, W - n + 1, (1,), generator=gen).item())
+    top = int(torch.randint(0, H - n + 1, (1,), generator=gen, device=latent.device).item())
+    left = int(torch.randint(0, W - n + 1, (1,), generator=gen, device=latent.device).item())
 
     out = latent.clone()
     out[:, :, top:top + n, left:left + n] = fill_value

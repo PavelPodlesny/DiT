@@ -1,6 +1,8 @@
 """Contact-sheet grids, metrics CSV, and summary plots."""
 import csv
+import shutil
 from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 
 import matplotlib
@@ -16,6 +18,20 @@ def save_contact_sheet(path, reference_image: torch.Tensor, member_images: torch
     grid_input = torch.cat([reference_image, member_images], dim=0)
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     save_image(grid_input, path, nrow=nrow, normalize=True, value_range=(-1, 1))
+
+
+def archive_results(output_dir, archive_dir=None) -> Path:
+    """Compresses `output_dir` into a timestamped .tar.gz, written to
+    `archive_dir` (defaults to output_dir's parent, so the archive doesn't
+    end up nested inside the directory it's archiving)."""
+    output_dir = Path(output_dir)
+    archive_dir = Path(archive_dir) if archive_dir else output_dir.parent
+    archive_dir.mkdir(parents=True, exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    base_name = archive_dir / f"{output_dir.name}_{timestamp}"
+    archive_path = shutil.make_archive(str(base_name), "gztar", root_dir=str(output_dir))
+    return Path(archive_path)
 
 
 class MetricsCSVWriter:

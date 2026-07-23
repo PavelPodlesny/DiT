@@ -31,6 +31,8 @@ perturbations:
 
 # Output
 output_dir: uncertainty_results
+archive: true          # tar.gz output_dir on successful completion
+# archive_dir: /path/to/archives  # defaults to output_dir's parent
 
 # --dry-run tolerances (fp32 only; run_uncertainty.py assumes fp32 throughout)
 dry_run_tolerances:

@@ -8,7 +8,7 @@ import torch
 
 from uncertainty.metrics import MetricSuite, compute_ensemble_metrics
 from uncertainty.perturbations import build_ensemble
-from uncertainty.reporting import MetricsCSVWriter, plot_summary_from_csv, save_contact_sheet
+from uncertainty.reporting import MetricsCSVWriter, archive_results, plot_summary_from_csv, save_contact_sheet
 from uncertainty.trajectory import resume_from_branch, run_base_trajectory
 
 logger = logging.getLogger("uncertainty.pipeline")
@@ -78,3 +78,7 @@ def run_pipeline(adapter, config):
     csv_writer.close()
     plot_summary_from_csv(csv_path, plots_dir)
     logger.info("Done. Metrics: %s, plots: %s", csv_path, plots_dir)
+
+    if config.archive:
+        archive_path = archive_results(output_dir, config.archive_dir)
+        logger.info("Archived results to: %s", archive_path)
