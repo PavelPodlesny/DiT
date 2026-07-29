@@ -8,7 +8,9 @@ import torch
 
 from uncertainty.metrics import MetricSuite, compute_ensemble_metrics
 from uncertainty.perturbations import build_ensemble
-from uncertainty.reporting import MetricsCSVWriter, archive_results, plot_summary_from_csv, save_contact_sheet
+from uncertainty.reporting import (
+    MetricsCSVWriter, archive_results, plot_summary_from_csv, save_contact_sheet, save_run_config,
+)
 from uncertainty.trajectory import resume_from_branch, run_base_trajectory
 
 logger = logging.getLogger("uncertainty.pipeline")
@@ -29,6 +31,7 @@ def run_pipeline(adapter, config):
         dino_model=config.metrics.dino_model,
     )
     csv_writer = MetricsCSVWriter(csv_path)
+    save_run_config(output_dir, config)
 
     for class_id in config.classes:
         for base_idx in range(config.M):

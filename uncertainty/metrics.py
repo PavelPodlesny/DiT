@@ -17,7 +17,7 @@ def latent_mse(a: torch.Tensor, b: torch.Tensor) -> float:
 
 class MetricSuite:
     def __init__(self, device, lpips_net="alex", clip_model="ViT-B-32",
-                 clip_pretrained="openai", dino_model="dino_vits16"):
+                 clip_pretrained="openai", dino_model="vit_small_patch14_dinov2.lvd142m"):
         self.device = device
         self.lpips_net = lpips_net
         self.clip_model_name = clip_model
@@ -51,7 +51,8 @@ class MetricSuite:
 
     def _get_dino(self):
         if self._dino is None:
-            self._dino = torch.hub.load("facebookresearch/dino:main", self.dino_model_name)
+            import timm
+            self._dino = timm.create_model(self.dino_model_name, pretrained=True, num_classes=0)
             self._dino = self._dino.to(self.device).eval()
         return self._dino
 

@@ -66,10 +66,10 @@ Beyond `environment.yml`, the metrics module needs:
 pip install pyyaml lpips open_clip_torch matplotlib
 ```
 
-DINO is loaded via `torch.hub.load("facebookresearch/dino:main", ...)`, which requires network
-access on first use (downloads the checkpoint to the torch hub cache). LPIPS (`lpips.LPIPS`) and
-CLIP (`open_clip.create_model_and_transforms(..., pretrained="openai")`) likewise download
-pretrained weights over the network the first time they're instantiated.
+DINO is loaded via `timm.create_model("vit_small_patch14_dinov2.lvd142m", pretrained=True, ...)`,
+which requires network access on first use (downloads the checkpoint to the timm/HF cache). LPIPS
+(`lpips.LPIPS`) and CLIP (`open_clip.create_model_and_transforms(..., pretrained="openai")`)
+likewise download pretrained weights over the network the first time they're instantiated.
 
 A GPU is not strictly required (the tool falls back to CPU like `sample.py` does), but running
 DiT-XL/2 plus the VAE, LPIPS, CLIP, and DINO models on CPU is impractically slow in practice.
@@ -101,6 +101,8 @@ first step at which the discrepancy exceeded tolerance, to help localize the bug
 
 ## Outputs (under `output_dir`)
 
+- `run_config.yaml` — a snapshot of the fully-resolved config for this run (including `M` and `K`),
+  written at run start so results are self-describing without the original input YAML.
 - `latents/class{c}/base{b}/final.pt`, `branch{p}.pt` — base trajectory latents.
 - `latents/class{c}/base{b}/branch{p}/{type}/ensemble_final.pt` — the K perturbed members' final
   latents, shape `(K, 4, H, W)`.

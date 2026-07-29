@@ -2,6 +2,7 @@
 import csv
 import shutil
 from collections import defaultdict
+from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
 
@@ -9,7 +10,17 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import torch
+import yaml
 from torchvision.utils import make_grid, save_image
+
+
+def save_run_config(output_dir, config):
+    """Snapshots the resolved config (including M/K) into output_dir so a
+    results folder is self-describing without the original input YAML."""
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    with open(output_dir / "run_config.yaml", "w") as f:
+        yaml.safe_dump(asdict(config), f, default_flow_style=False, sort_keys=False)
 
 
 def save_contact_sheet(path, reference_image: torch.Tensor, member_images: torch.Tensor, nrow: int = 4):

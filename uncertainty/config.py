@@ -21,7 +21,7 @@ class MetricsConfig:
     lpips_net: str = "alex"
     clip_model: str = "ViT-B-32"
     clip_pretrained: str = "openai"
-    dino_model: str = "dino_vits16"
+    dino_model: str = "vit_small_patch14_dinov2.lvd142m"
 
 
 @dataclass
