@@ -44,4 +44,4 @@ metrics:
   lpips_net: alex
   clip_model: ViT-B-32
   clip_pretrained: openai
-  dino_model: dino_vits16
+  dino_model: vit_small_patch14_dinov2.lvd142m
