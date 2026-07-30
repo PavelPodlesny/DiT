@@ -12,25 +12,23 @@ device: null          # null = cuda if available, else cpu
 
 # Trajectory / branching
 classes: [207]   # ImageNet class ids to analyze
-M: 3                  # base trajectories per class
+M: 2                  # base trajectories per class
 base_seed: 0          # base b uses seed base_seed + b
-branch_points: [25, 50, 75]   # respaced step indices (0..num_sampling_steps-1)
+branch_points: [25, 75]   # respaced step indices (0..num_sampling_steps-1)
 
 # Perturbations applied at each branch point
 K: 3                  # ensemble size per (class, base, branch, type)
 perturbation_seed: 1000
 perturbations:
   - type: gaussian_noise
-    params: {std: 0.1}
-  - type: gaussian_blur
-    params: {kernel_size: 5, sigma: 1.0}
+    params: {std: 1.0}
   - type: nxn_mask
     params: {size: 8, fill_value: 0.0}
   - type: scattered_mask
-    params: {fraction: 0.05, fill_value: 0.0}
+    params: {fraction: 0.0625, fill_value: 0.0}
 
 # Output
-output_dir: uncertainty_results
+output_dir: toy_results
 archive: true          # tar.gz output_dir on successful completion
 # archive_dir: /path/to/archives  # defaults to output_dir's parent
 
