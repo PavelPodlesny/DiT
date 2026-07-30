@@ -25,7 +25,7 @@ perturbations:
   - type: nxn_mask
     params: {size: 8, fill_value: 0.0}
   - type: scattered_mask
-    params: {fraction: 0.05, fill_value: 0.0}
+    params: {fraction: 0.0625, fill_value: 0.0}
 
 # Output
 output_dir: results
