@@ -52,7 +52,10 @@ class MetricSuite:
     def _get_dino(self):
         if self._dino is None:
             import timm
-            self._dino = timm.create_model(self.dino_model_name, pretrained=True, num_classes=0)
+            # Native DINOv2 checkpoints use img_size=518; embed() always resizes
+            # to 224 (matching CLIP), so the model must be built for that size
+            # or PatchEmbed's strict shape assertion fails.
+            self._dino = timm.create_model(self.dino_model_name, pretrained=True, num_classes=0, img_size=224)
             self._dino = self._dino.to(self.device).eval()
         return self._dino
 
