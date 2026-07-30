@@ -23,10 +23,14 @@ def save_run_config(output_dir, config):
         yaml.safe_dump(asdict(config), f, default_flow_style=False, sort_keys=False)
 
 
-def save_contact_sheet(path, reference_image: torch.Tensor, member_images: torch.Tensor, nrow: int = 4):
-    """reference_image: (1, C, H, W), member_images: (K, C, H, W). Reference
-    tile is placed first, followed by the K ensemble members."""
-    grid_input = torch.cat([reference_image, member_images], dim=0)
+def save_contact_sheet(
+    path, final_image: torch.Tensor, reference_image: torch.Tensor, member_images: torch.Tensor, nrow: int = 4,
+):
+    """final_image: (1, C, H, W) decoded unperturbed base trajectory, reference_image:
+    (1, C, H, W) decoded latent at the branch point, member_images: (K, C, H, W). Final
+    unperturbed tile is placed first, then the branch-point reference, then the K
+    ensemble members."""
+    grid_input = torch.cat([final_image, reference_image, member_images], dim=0)
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     save_image(grid_input, path, nrow=nrow, normalize=True, value_range=(-1, 1))
 

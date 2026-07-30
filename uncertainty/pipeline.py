@@ -45,6 +45,8 @@ def run_pipeline(adapter, config):
             for branch_point, latent in base.branch_latents.items():
                 torch.save(latent.cpu(), base_dir / f"branch{branch_point}.pt")
 
+            final_image = adapter.decode(base.final_latent)
+
             for branch_point in config.branch_points:
                 branch_latent = base.branch_latents[branch_point]
                 reference_image = adapter.decode(branch_latent)
@@ -70,7 +72,7 @@ def run_pipeline(adapter, config):
                     save_contact_sheet(
                         contact_sheets_dir / f"class{class_id}" / f"base{base_idx}"
                         / f"branch{branch_point}" / f"{pert_spec.type}.png",
-                        reference_image, final_images,
+                        final_image, reference_image, final_images,
                     )
 
                     metrics = compute_ensemble_metrics(

@@ -1,0 +1,9 @@
+torch>=1.13
+torchvision
+timm
+diffusers
+accelerate
+lpips
+open_clip_torch
+matplotlib
+pyyaml
